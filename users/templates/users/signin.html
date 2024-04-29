@@ -8,5 +8,9 @@
 
 <!-- Содержимое -->
 {% block content %}
-
+    <form action="{% url 'signin' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+    </form>
 {% endblock %}
