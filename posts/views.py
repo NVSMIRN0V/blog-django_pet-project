@@ -1,15 +1,24 @@
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView
+
 
 from posts.models import Post
+from users.models import User
 
 
+class PostsListView(ListView):
+    model = Post
+    template_name = 'posts/index.html'
 
-def home(request):
-    return HttpResponse(f'Page')
-    # return render(request, '', context={'title': 'Главная'})
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            user = User.objects.get(username=self.request.user.username)
+            queryset = Post.objects.filter(author_id=user.pk)
+        else:
+            queryset = Post.objects.all()
+        return queryset
+            
 
 
 class CreatePostView(CreateView):
@@ -20,7 +29,6 @@ class CreatePostView(CreateView):
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""
-        # self.object = form.save()
         form.instance.author = self.request.user
         return super().form_valid(form)
 
