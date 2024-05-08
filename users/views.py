@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from users.forms import UserSignInForm, UserSignUpForm
 
 
@@ -23,4 +23,14 @@ class SignUpView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs) 
         context['title'] = 'Регистрация'
+        return context
+
+
+class SignOutView(LogoutView):
+    template_name = 'users/signout.html'
+    next_page = 'signout'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs) 
+        context['title'] = 'Выход'
         return context

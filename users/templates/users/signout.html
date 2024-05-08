@@ -1,0 +1,14 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!-- Внешние файлы -->
+{% block links %}
+
+{% endblock %}
+
+<!-- Содержимое -->
+{% block content %}
+    <h1 class="text-center">Выход</h1>
+    <p class="text-center">До новых встреч!</p>
+    <a href="{% url 'home' %}">На главную</a>
+{% endblock %}
