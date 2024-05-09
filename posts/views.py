@@ -5,9 +5,21 @@ from django.views.generic import CreateView, ListView, UpdateView, DetailView
 from posts.models import Post, User, Like
 
 
+def add_like(request, pk):
+    post_id = pk
+    user = request.user
+    post = Post.objects.get(id=post_id)
+
+    try:
+        like = Like.objects.get(user=user, post=post)
+        like.is_like = not like.is_like
+        like.save()
+    except Like.DoesNotExist:
+        Like.objects.create(user=user, post=post, is_like=True)
+    return redirect('detail', pk=post_id)
 
 
-class LikePostView(DetailView):
+class DetailPostView(DetailView):
     model = Post
     template_name = 'posts/detail.html'
     context_object_name = 'post'
@@ -16,21 +28,7 @@ class LikePostView(DetailView):
         context = super().get_context_data(**kwargs) 
         context['title'] = 'Где я?'
         return context
-
-    def post(self, request, *args, **kwargs):
-        post_id = kwargs['pk']
-        user = request.user
-        post = Post.objects.get(pk=post_id)
-
-        try:
-            like = Like.objects.get(user=user, post=post)
-            like.is_like = not like.is_like
-            like.save()
-        except Like.DoesNotExist:
-            Like.objects.create(user=user, post=post, is_like=True)
-        return redirect(request, 'posts/detail.html')
-
-
+    
 
 class PostsListView(ListView):
     model = Post
@@ -50,7 +48,7 @@ class CreatePostView(CreateView):
     model = Post
     template_name = 'posts/create.html'
     fields = ['title', 'content']
-    success_url = reverse_lazy('signin')
+    success_url = reverse_lazy('/')
 
     def form_valid(self, form):
         """If the form is valid, save the associated model."""

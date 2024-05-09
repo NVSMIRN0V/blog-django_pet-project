@@ -14,7 +14,10 @@
 
     {% if request.user.is_authenticated %}
         <!-- Отображаем кнопку лайка -->
-        <a href="{% url 'detail' post.id %}">Like</a>
+        <form action="{% url 'like' post.id %}" method="post">
+            {% csrf_token %}
+           <button type="submit">Like</button>
+        </form>
     {% else %}
         <p>А чтобы лайкать надо зарегаться, чудик.</p>
     {% endif %}
