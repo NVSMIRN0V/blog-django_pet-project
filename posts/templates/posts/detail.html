@@ -1,0 +1,23 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+<!-- Внешние файлы -->
+{% block links %}
+
+{% endblock %}
+
+<!-- Содержимое -->
+{% block content %}
+
+    {{ post.date|date }} - {{ post.title }} - {{ post.likes }}
+    <p>{{ post.content }}</p>
+
+    {% if request.user.is_authenticated %}
+        <!-- Отображаем кнопку лайка -->
+        <a href="{% url 'detail' post.id %}">Like</a>
+    {% else %}
+        <p>А чтобы лайкать надо зарегаться, чудик.</p>
+    {% endif %}
+
+    <!-- Тут еще лайки ебану -->
+{% endblock %}

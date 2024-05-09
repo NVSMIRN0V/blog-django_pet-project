@@ -1,4 +1,3 @@
-from pyexpat import model
 from django.db import models
 from users.models import User
 
@@ -14,3 +13,13 @@ class Post(models.Model):
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
         db_table = 'posts'
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    is_like = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'likes'
+        

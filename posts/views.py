@@ -1,10 +1,35 @@
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView
+from posts.models import Post, User, Like
 
 
-from posts.models import Post
-from users.models import User
+
+
+class LikePostView(DetailView):
+    model = Post
+    template_name = 'posts/detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs) 
+        context['title'] = 'Где я?'
+        return context
+
+    def post(self, request, *args, **kwargs):
+        post_id = kwargs['pk']
+        user = request.user
+        post = Post.objects.get(pk=post_id)
+
+        try:
+            like = Like.objects.get(user=user, post=post)
+            like.is_like = not like.is_like
+            like.save()
+        except Like.DoesNotExist:
+            Like.objects.create(user=user, post=post, is_like=True)
+        return redirect(request, 'posts/detail.html')
+
 
 
 class PostsListView(ListView):
